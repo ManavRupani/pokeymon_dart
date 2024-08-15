@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import './loading_screen.dart'; // Import the loading screen
+import 'card_comparison_screen.dart'; // Import the new screen
+
 void main() {
   runApp(PokemonCardApp());
 }
@@ -65,65 +66,26 @@ class _PokemonCardListState extends State<PokemonCardList> {
     }
   }
 
-List<Color> _getGradientColors(String rarity) {
-  switch (rarity.toLowerCase()) {
-    case 'amazing rare':
-      return [Colors.deepPurple.shade200, Colors.blueAccent.shade200];
-    case 'common':
-      return [Colors.grey.shade300, Colors.blueGrey.shade200];
-    case 'legend':
-      return [Colors.cyan.shade200, Colors.deepPurple.shade200];
-    case 'promo':
-      return [Colors.orange.shade200, Colors.redAccent.shade200];
-    case 'rare':
-      return [Colors.blue.shade200, Colors.purple.shade200];
-    case 'rare ace':
-      return [Colors.indigo.shade200, Colors.teal.shade200];
-    case 'rare break':
-      return [Colors.green.shade200, Colors.yellow.shade200];
-    case 'rare holo':
-      return [Colors.blueGrey.shade200, Colors.teal.shade200];
-    case 'rare holo ex':
-      return [Colors.pink.shade200, Colors.purpleAccent.shade200];
-    case 'rare holo gx':
-      return [Colors.deepOrange.shade200, Colors.red.shade200];
-    case 'rare holo lv.x':
-      return [Colors.amber.shade200, Colors.orange.shade200];
-    case 'rare holo star':
-      return [Colors.yellow.shade200, Colors.deepOrange.shade200];
-    case 'rare holo v':
-      return [Colors.red.shade200, Colors.pink.shade200];
-    case 'rare holo vmax':
-      return [Colors.purple.shade200, Colors.deepPurpleAccent.shade200];
-    case 'rare prime':
-      return [Colors.blue.shade200, Colors.cyan.shade200];
-    case 'rare prism star':
-      return [Colors.pink.shade200, Colors.blue.shade200];
-    case 'rare rainbow':
-      return [Colors.red.shade200, Colors.orange.shade200, Colors.yellow.shade200, Colors.green.shade200, Colors.blue.shade200, Colors.indigo.shade200, Colors.purple.shade200];
-    case 'rare secret':
-      return [Colors.blueGrey.shade200, Colors.black54];
-    case 'rare shining':
-      return [Colors.pink.shade200, Colors.yellow.shade200];
-    case 'rare shiny':
-      return [Colors.red.shade200, Colors.orange.shade200];
-    case 'rare shiny gx':
-      return [Colors.purple.shade200, Colors.blueAccent.shade200];
-    case 'rare ultra':
-      return [Colors.green.shade200, Colors.blue.shade200];
-    case 'uncommon':
-      return [Colors.green.shade200, Colors.lightGreen.shade200];
-    default:
-      return [Colors.white, Colors.grey.shade200];
-  }
-}
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Pokémon Cards'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.compare_arrows),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CardComparisonScreen(
+                    pokemonCards: pokemonCards,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: pokemonCards.isEmpty && isLoading
           ? Center(child: CircularProgressIndicator())
@@ -145,7 +107,6 @@ List<Color> _getGradientColors(String rarity) {
                 }
                 final card = pokemonCards[index];
                 final isSelected = index == selectedIndex;
-                final gradientColors = _getGradientColors(card['rarity'] ?? 'common');
 
                 return GestureDetector(
                   onTap: () {
@@ -162,11 +123,7 @@ List<Color> _getGradientColors(String rarity) {
                   child: Container(
                     margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: gradientColors,
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
+                      color: Colors.blueGrey.shade200, // Single solid background color
                       borderRadius: BorderRadius.circular(8.0),
                       boxShadow: [
                         BoxShadow(
@@ -182,14 +139,14 @@ List<Color> _getGradientColors(String rarity) {
                         card['name'] ?? 'Unknown',
                         style: TextStyle(
                           fontSize: 20,
-                          color: Colors.white, // Text color is always white to contrast with the gradient
+                          color: Colors.white, // Text color is always white to contrast with the background
                         ),
                       ),
                       subtitle: Text(
                         card['set']?['name'] ?? 'Unknown Set',
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.white70, // Subtitle color is always white70 to contrast with the gradient
+                          color: Colors.white70, // Subtitle color is always white70 to contrast with the background
                         ),
                       ),
                     ),
@@ -206,76 +163,14 @@ class PokemonCardDetail extends StatelessWidget {
 
   PokemonCardDetail({required this.card});
 
-  List<Color> _getGradientColors(String rarity) {
-  switch (rarity.toLowerCase()) {
-    case 'amazing rare':
-      return [Colors.deepPurple.shade200, Colors.blueAccent.shade200];
-    case 'common':
-      return [Colors.grey.shade300, Colors.blueGrey.shade200];
-    case 'legend':
-      return [Colors.cyan.shade200, Colors.deepPurple.shade200];
-    case 'promo':
-      return [Colors.orange.shade200, Colors.redAccent.shade200];
-    case 'rare':
-      return [Colors.blue.shade200, Colors.purple.shade200];
-    case 'rare ace':
-      return [Colors.indigo.shade200, Colors.teal.shade200];
-    case 'rare break':
-      return [Colors.green.shade200, Colors.yellow.shade200];
-    case 'rare holo':
-      return [Colors.blueGrey.shade200, Colors.teal.shade200];
-    case 'rare holo ex':
-      return [Colors.pink.shade200, Colors.purpleAccent.shade200];
-    case 'rare holo gx':
-      return [Colors.deepOrange.shade200, Colors.red.shade200];
-    case 'rare holo lv.x':
-      return [Colors.amber.shade200, Colors.orange.shade200];
-    case 'rare holo star':
-      return [Colors.yellow.shade200, Colors.deepOrange.shade200];
-    case 'rare holo v':
-      return [Colors.red.shade200, Colors.pink.shade200];
-    case 'rare holo vmax':
-      return [Colors.purple.shade200, Colors.deepPurpleAccent.shade200];
-    case 'rare prime':
-      return [Colors.blue.shade200, Colors.cyan.shade200];
-    case 'rare prism star':
-      return [Colors.pink.shade200, Colors.blue.shade200];
-    case 'rare rainbow':
-      return [Colors.red.shade200, Colors.orange.shade200, Colors.yellow.shade200, Colors.green.shade200, Colors.blue.shade200, Colors.indigo.shade200, Colors.purple.shade200];
-    case 'rare secret':
-      return [Colors.blueGrey.shade200, Colors.black54];
-    case 'rare shining':
-      return [Colors.pink.shade200, Colors.yellow.shade200];
-    case 'rare shiny':
-      return [Colors.red.shade200, Colors.orange.shade200];
-    case 'rare shiny gx':
-      return [Colors.purple.shade200, Colors.blueAccent.shade200];
-    case 'rare ultra':
-      return [Colors.green.shade200, Colors.blue.shade200];
-    case 'uncommon':
-      return [Colors.green.shade200, Colors.lightGreen.shade200];
-    default:
-      return [Colors.white, Colors.grey.shade200];
-  }
-}
-
-
   @override
   Widget build(BuildContext context) {
-    final gradientColors = _getGradientColors(card['rarity'] ?? 'common');
-
     return Scaffold(
       appBar: AppBar(
         title: Text(card['name'] ?? 'Unknown'),
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: gradientColors,
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
+        color: Colors.blueGrey.shade200, // Single solid background color
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
